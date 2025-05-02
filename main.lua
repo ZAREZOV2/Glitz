@@ -1,8 +1,8 @@
 -- Загрузка библиотеки Fluent Renewed
 local Fluent = loadstring(game:HttpGet("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
-local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
-local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau"))()
-local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau"))()
+local Library = loadstring(game:HttpGet("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau"))()
 
 -- Создание окна интерфейса
 local Window = Library:CreateWindow{
@@ -63,16 +63,7 @@ local function startFly()
 
     for _, part in pairs(character:GetDescendants()) do
         if part:IsA("BasePart") then
-            coroutine.wrap(function()
-                local con = nil
-                con = RunService.Stepped:Connect(function()
-                    if not flying then
-                        con:Disconnect()
-                        part.CanCollide = true
-                    end
-                    part.CanCollide = false
-                end)
-            end)()
+            part.CanCollide = false
         end
     end
 
@@ -82,6 +73,11 @@ local function startFly()
             bv:Destroy()
             bg:Destroy()
             humanoid.PlatformStand = false
+            for _, part in pairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
             return
         end
 
@@ -90,7 +86,7 @@ local function startFly()
         local moveDirection = Vector3.new(
             (controls.R - controls.L),
             (controls.U - controls.D),
-            (controls.F - controls.B)
+            (controls.B - controls.F)
         )
         if moveDirection.Magnitude > 0 then
             bv.Velocity = (camCF:VectorToWorldSpace(moveDirection)).Unit * flySpeed
@@ -122,9 +118,9 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
             })
         end
     elseif key == Enum.KeyCode.W then
-        controls.B = 1
-    elseif key == Enum.KeyCode.S then
         controls.F = 1
+    elseif key == Enum.KeyCode.S then
+        controls.B = 1
     elseif key == Enum.KeyCode.A then
         controls.L = 1
     elseif key == Enum.KeyCode.D then
@@ -139,9 +135,9 @@ end)
 UserInputService.InputEnded:Connect(function(input)
     local key = input.KeyCode
     if key == Enum.KeyCode.W then
-        controls.B = 0
-    elseif key == Enum.KeyCode.S then
         controls.F = 0
+    elseif key == Enum.KeyCode.S then
+        controls.B = 0
     elseif key == Enum.KeyCode.A then
         controls.L = 0
     elseif key == Enum.KeyCode.D then
@@ -177,6 +173,11 @@ FlyToggle:OnChanged(function()
             local humanoid = character:FindFirstChildWhichIsA("Humanoid")
             if humanoid then
                 humanoid.PlatformStand = false
+            end
+            for _, part in pairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
             end
         end
         StarterGui:SetCore("SendNotification", {
