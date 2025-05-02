@@ -139,9 +139,9 @@ end)
 UserInputService.InputEnded:Connect(function(input)
     local key = input.KeyCode
     if key == Enum.KeyCode.W then
-        controls.F = 0
-    elseif key == Enum.KeyCode.S then
         controls.B = 0
+    elseif key == Enum.KeyCode.S then
+        controls.F = 0
     elseif key == Enum.KeyCode.A then
         controls.L = 0
     elseif key == Enum.KeyCode.D then
